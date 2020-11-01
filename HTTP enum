@@ -1,0 +1,46 @@
+add the domain to hosts file
+
+10.10.10.193    fuse.fabricorp.local
+10.10.10.193	fuse.htb
+
+
+The web page has opened up. 
+
+
+
+Date 	HTML 	Data (day) 	Data (month)
+29 May 2020	View	CSV/Excel	CSV/Excel
+30 May 2020	View	CSV/Excel	CSV/Excel
+10 Jun 2020	View	CSV/Excel	CSV/Excel
+
+Viewed each link. Also looked up for any exploit for PaperCut product.
+
+Each file has some garbage data but also possible usernames.
+
+Time	User	Pages	Copies	Printer	Document	Client	Duplex	Grayscale
+17:50:10 	pmerton 	1 	1 	HP-MFT01 	New Starter - bnielson - Notepad
+LETTER, 19kb, PCL6 	JUMP01 	No 	Yes
+17:53:55 	tlavel 	1 	1 	HP-MFT01 	IT Budget Meeting Minutes - Notepad
+LETTER, 52kb, PCL6 	LONWK015 	No 	Yes
+
+combining all the user names we get a list
+
+┌─[ashhad@parrot]─[~/Documents/htb/fuse]
+└──╼ $cat users.txt 
+pmerton
+tlavel
+sthompson
+bhult
+administrator
+
+
+Tried gobuster 
+
+└──╼ $gobuster dir -w /usr/share/wordlists/dirb/big.txt -u http://fuse.fabricorp.local/papercut/logs/html/
+
+┌─[ashhad@parrot]─[~/Documents/htb/fuse]
+└──╼ $gobuster dir -w /usr/share/wordlists/dirb/big.txt -u http://fuse.fabricorp.local/
+
+
+
+
